@@ -1,0 +1,62 @@
+Định nghĩa thực thể và tính toán
+# import cv2
+# import numpy as np
+# from PIL import Image, ImageTk
+#
+#
+# class ImageProcessor:
+#     @staticmethod
+#     def process_for_tkinter(image_path, max_w, max_h):
+#         # 1. Đọc ảnh giữ nguyên kênh Alpha (trong suốt)
+#         img = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+#         if img is None:
+#             return None
+#
+#         h_orig, w_orig = img.shape[:2]
+#         ratio = min(max_w / w_orig, max_h / h_orig)
+#         new_w = int(w_orig * ratio)
+#         new_h = int(h_orig * ratio)
+#
+#         # 2. Logic nội suy thông minh
+#         if ratio > 1:
+#             interp = cv2.INTER_LANCZOS4
+#         else:
+#             interp = cv2.INTER_AREA
+#
+#             # 3. Xử lý màu sắc và kênh Alpha
+#         if len(img.shape) == 4 or (len(img.shape) == 3 and img.shape[2] == 4):
+#             # Nếu là ảnh 4 kênh (BGRA), chuyển sang RGBA
+#             img_correct = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
+#         else:
+#             # Nếu là ảnh 3 kênh (BGR), chuyển sang RGB
+#             img_correct = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+#
+#         img_resized = cv2.resize(img_correct, (new_w, new_h), interpolation=interp)
+#
+#         return ImageTk.PhotoImage(Image.fromarray(img_resized))
+#
+#     @staticmethod
+#     def process_rgb_layers_for_tkinter(image_path, max_w, max_h):
+#         img = cv2.imread(image_path)
+#         if img is None:
+#             return None, None, None
+#
+#         # OpenCV đọc ảnh theo thứ tự BGR
+#         b, g, r = cv2.split(img)
+#         zeros = np.zeros_like(b)
+#
+#         # Gộp lại nhưng chỉ giữ 1 kênh màu (nhớ thứ tự của hàm merge là B, G, R)
+#         img_r = cv2.merge([zeros, zeros, r])
+#         img_g = cv2.merge([zeros, g, zeros])
+#         img_b = cv2.merge([b, zeros, zeros])
+#
+#         # Hàm phụ trợ để convert BGR -> RGB và resize cho Tkinter
+#         def convert_to_tk(img_bgr):
+#             img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+#             h, w = img_rgb.shape[:2]
+#             ratio = min(max_w / w, max_h / h)
+#             new_w, new_h = int(w * ratio), int(h * ratio)
+#             img_resized = cv2.resize(img_rgb, (new_w, new_h), interpolation=cv2.INTER_AREA)
+#             return ImageTk.PhotoImage(Image.fromarray(img_resized))
+#
+#         return convert_to_tk(img_r), convert_to_tk(img_g), convert_to_tk(img_b)
