@@ -34,6 +34,7 @@ class MainView(ctk.CTk):
 
         self.configure(fg_color=self.colors["bg_main"])
         self.presenter = None
+        self.on_back_callback = None
         self.thumb_count = 0
         self.thumbnail_buttons = {}
 
@@ -86,6 +87,15 @@ class MainView(ctk.CTk):
     # PHẦN 1: GIAO DIỆN SIDEBAR TRÁI
     # ==========================================
     def _init_sidebar_widgets(self):
+        self.btn_back = ctk.CTkButton(
+            self.sidebar, text="← QUAY VỀ MENU",
+            font=ctk.CTkFont(family="Segoe UI", size=13, weight="bold"),
+            fg_color="transparent", hover_color="#EBEBEB", text_color=self.colors["text_dim"],
+            anchor="w", width=150, height=35,
+            command=self._on_back_click
+        )
+        self.btn_back.pack(anchor="nw", padx=15, pady=(15, 0))
+
         ctk.CTkLabel(
             self.sidebar, text="HOMEWORK 01",
             font=ctk.CTkFont(family="Segoe UI", size=24, weight="bold"),
@@ -398,6 +408,14 @@ class MainView(ctk.CTk):
     def _on_mouse_up(self, event):
         if self.presenter:
             self.presenter.on_mouse_up()
+
+    def set_back_callback(self, callback):
+        self.on_back_callback = callback
+
+    def _on_back_click(self):
+        if self.on_back_callback:
+            self.on_back_callback()  # Báo cho main.py biết cần đổi trạng thái
+        self.destroy()  # Đóng cửa sổ hiện tại
 
     # ==========================================
     # CÁC HÀM CẬP NHẬT GIAO DIỆN TỪ PRESENTER
